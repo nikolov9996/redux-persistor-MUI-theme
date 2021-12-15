@@ -1,10 +1,14 @@
-import React from 'react';
-import { Typography } from '@mui/material';
+import React, { useEffect } from 'react';
+import { getCurrent, getForecast } from './API/weather/weatherAPI';
 
 function App() {
+  useEffect(() => {
+    getCurrent("burgas", 2)
+  }, [])
   return (
     <div className="App">
-      <Typography variant="h1" color="primary">Template with redux and persistor + MUI </Typography>
+
+
     </div>
   );
 }
