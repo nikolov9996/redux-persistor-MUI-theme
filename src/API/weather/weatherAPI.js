@@ -6,13 +6,16 @@ const weatherAPI = axios.create({
     timeout: 5000,
 });
 
-
 export const getForecast = async (city, days) => {
     const data = await weatherAPI.get(`${FORECAST}?key=${process.env.REACT_APP_WEATHER_KEY}&q=${city}&days=${days}`);
     console.log(data)
 }
 
 export const getCurrent = async (city) => {
-    const data = await weatherAPI.get(`${CURRENT}?key=${process.env.REACT_APP_WEATHER_KEY}&q=${city}`);
-    console.log(data)
+    try {
+        const { data } = await weatherAPI.get(`${CURRENT}?key=${process.env.REACT_APP_WEATHER_KEY}&q=${city}`);
+        return data;
+    } catch (error) {
+        console.log(error)
+    }
 }

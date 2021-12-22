@@ -1,14 +1,10 @@
-import React, { useEffect } from 'react';
-import { getCurrent, getForecast } from './API/weather/weatherAPI';
+import React from 'react';
+import CurrentWeather from './features/CurrentWeather/CurrentWeather';
 
 function App() {
-  useEffect(() => {
-    getCurrent("burgas", 2)
-  }, [])
   return (
     <div className="App">
-
-
+      <CurrentWeather />
     </div>
   );
 }
