@@ -1,12 +1,8 @@
-import React from 'react';
-import { Typography } from '@mui/material';
+import React from "react";
+import PageRouter from "./app/router";
 
 function App() {
-  return (
-    <div className="App">
-      <Typography variant="h1" color="primary">Template with redux and persistor + MUI </Typography>
-    </div>
-  );
+  return <PageRouter />;
 }
 
 export default App;
