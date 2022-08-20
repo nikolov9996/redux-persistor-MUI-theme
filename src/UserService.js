@@ -1,15 +1,15 @@
 import Keycloak from 'keycloak-js'
 
 const _kc = new Keycloak({
-    url: "https://openid.finoid.eu/auth",    
-    // url: "https://id.newpay.bg/auth",  
-    realm: "billing-module",
-    clientId: "master",
-    publicClient :true
-  });
+  url: "https://openid.finoid.eu/auth",
+  // url: "https://id.newpay.bg/auth",  
+  realm: "billing-module",
+  clientId: "master",
+  publicClient: true
+});
 
 const initKeycloak = (onAuthenticatedCallback) => {
- 
+
   _kc.init({
     // onLoad: 'login-required',
     onLoad: 'check-sso',
@@ -22,15 +22,15 @@ const initKeycloak = (onAuthenticatedCallback) => {
     .then((authenticated) => {
       if (authenticated) {
         onAuthenticatedCallback();
- 
+
       } else {
         console.log("user is not authenticated..!");
         doLogin();
 
       }
-      
-      })
-      .catch(console.error);
+
+    })
+    .catch(console.error);
 };
 const doLogin = _kc.login;
 
@@ -38,12 +38,12 @@ const doLogout = _kc.logout;
 const isTokenExpired = _kc.isTokenExpired;
 
 const getToken = () => _kc.token;
-const newRefreshToken =()=> _kc.refreshToken;
+const newRefreshToken = () => _kc.refreshToken;
 
 console.log(_kc);
 
 const isLoggedIn = () => !!_kc.token;
- 
+
 
 const updateToken = (successCallback) =>
   _kc.updateToken(30)

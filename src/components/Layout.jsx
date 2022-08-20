@@ -13,10 +13,33 @@ import BurgerIcon from "@mui/icons-material/Menu";
 import ProfileIcon from "@mui/icons-material/Person";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
-import { selectUser } from "../features/authSlice";
+import { authenticate, selectUser } from "../features/authSlice";
+import UserService from "../UserService";
+import jwt_decode from "jwt-decode";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 const Layout = ({ children }) => {
-  const { name } = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+
+  const token = UserService.getToken();
+  const name = UserService.getUsername();
+  const roles = UserService.getRole()?.roles;
+
+  useEffect(() => {
+    if (token) {
+      const decoded = jwt_decode(token);
+      dispatch(authenticate({ token, name, roles }));
+      setLoading(false);
+    }
+  }, [token, name, roles]);
+
+  if (loading) {
+    return <>Loading...</>;
+  }
+
   return (
     <Paper
       elevation={4}
