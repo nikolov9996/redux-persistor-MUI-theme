@@ -1,17 +1,18 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
-import { useSelector } from "react-redux";
-import { selectAccounts } from "../accountsSlice";
-import { FORMAT_DATE } from "../../../app/constants";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAccounts, setCurrentAccount } from "../accountsSlice";
+import { FORMAT_DATE, ROUTES } from "../../../app/constants";
 import Statuses from "../../../components/Statuses";
-import AccessButton from "./AccessButton";
 import { Grid } from "@mui/material";
+import ActionMenu from "../../../components/ActionMenu";
+import { useNavigate } from "react-router-dom";
 
 const columns = [
   {
     field: "id",
-    headerName: <span>&#8470;</span>,
+    headerName: "№",
     width: 30,
     // align: "center",
     sortable: false,
@@ -58,21 +59,27 @@ const columns = [
     field: "active",
     headerName: "Статус",
     sortable: false,
+    field: "active",
     width: 250,
     renderCell: (params) => {
-      const { value } = params;
-      const getText = () => (value ? "Активирай" : "Спри достъп");
+      const { value, id } = params;
+      const onClick = (e) => {
+        e.stopPropagation();
+      };
+
+      const getText = () => (value ? "Спри достъп" : "Активирай");
       const getStatusText = () => (value ? "Активен" : "Деактивиран");
       return (
-        <Grid container justifyContent="space-between">
+        <Grid
+          onClick={(e) => onClick(e)}
+          container
+          justifyContent="space-between"
+        >
           <Grid item>
             <Statuses type={value} text={getStatusText()} />
           </Grid>
           <Grid item>
-            <AccessButton
-              onClick={() => updateStatus(value)}
-              text={getText()}
-            />
+            <ActionMenu accountId={id} access={value} text={getText()} />
           </Grid>
         </Grid>
       );
@@ -80,12 +87,15 @@ const columns = [
   },
 ];
 
-async function updateStatus(current) {
-  console.log("status will be updated to: " + !current);
-}
-
 export default function TableAccounts() {
   const accounts = useSelector(selectAccounts);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleRowClick = (accountId) => {
+    dispatch(setCurrentAccount(accounts.find((x) => x.id === accountId)));
+    navigate(ROUTES.ACCOUNT_DETAILS(accountId));
+  };
 
   return (
     <Box sx={{ height: 400, width: "100%" }}>
@@ -97,6 +107,9 @@ export default function TableAccounts() {
         disableSelectionOnClick
         disableColumnMenu
         // loading={true}
+        onRowClick={(p) => {
+          handleRowClick(p.id);
+        }}
         experimentalFeatures={{ newEditingApi: true }}
       />
     </Box>

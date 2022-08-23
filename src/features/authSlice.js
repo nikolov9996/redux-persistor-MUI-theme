@@ -8,6 +8,7 @@ const initialState = {
     name: "",
     roles: [],
   },
+  agentId: null,
 };
 
 const authSlice = createSlice({
@@ -17,11 +18,16 @@ const authSlice = createSlice({
     authenticate: (state, { payload }) => {
       state.user = payload;
     },
+    setAgentId: (state, { payload }) => {
+      state.agentId = payload;
+    },
   },
 });
 
 export const selectUser = (state) => state[AUTH_SLICE].user;
 
-export const { authenticate } = authSlice.actions;
+export const selectAgentId = (state) => state[AUTH_SLICE].agentId;
+
+export const { authenticate, setAgentId } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -12,13 +12,13 @@ import { Link } from "react-router-dom";
 import BurgerIcon from "@mui/icons-material/Menu";
 import ProfileIcon from "@mui/icons-material/Person";
 import CloseIcon from "@mui/icons-material/Close";
-import { useSelector } from "react-redux";
-import { authenticate, selectUser } from "../features/authSlice";
+import { authenticate, setAgentId } from "../features/authSlice";
 import UserService from "../UserService";
-import jwt_decode from "jwt-decode";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { API } from "../services";
+import { ROUTES } from "../app/constants";
 
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
@@ -27,13 +27,24 @@ const Layout = ({ children }) => {
   const token = UserService.getToken();
   const name = UserService.getUsername();
   const roles = UserService.getRole()?.roles;
+  console.log(loading);
 
   useEffect(() => {
     if (token) {
-      const decoded = jwt_decode(token);
-      dispatch(authenticate({ token, name, roles }));
-      setLoading(false);
+      API.getUserData()
+        .then(({ data }) => {
+          console.log(data); // id and agent is different todo
+          dispatch(authenticate({ token, name, roles }));
+          dispatch(setAgentId(data.agent.id));
+        })
+        .catch((e) => {
+          console.error(e.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
+    // eslint-disable-next-line
   }, [token, name, roles]);
 
   if (loading) {
@@ -65,19 +76,19 @@ const Layout = ({ children }) => {
             <Grid item mt={6}>
               <IconButton size="small">
                 <BurgerIcon />
-                <Link to="/agents">Агенти</Link>
+                <Link to={ROUTES.AGENTS}>Агенти</Link>
               </IconButton>
             </Grid>
             <Grid item>
               <IconButton size="small">
                 <BurgerIcon />
-                <Link to="/accounts">Акаунти</Link>
+                <Link to={ROUTES.ACCOUNTS}>Акаунти</Link>
               </IconButton>
             </Grid>
             <Grid item>
               <IconButton size="small">
                 <ProfileIcon />
-                <Link to="/profile">Профил</Link>
+                <Link to={ROUTES.PROFILE}>Профил</Link>
               </IconButton>
             </Grid>
             <Grid item mt={2}>
