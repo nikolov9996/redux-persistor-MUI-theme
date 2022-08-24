@@ -6,6 +6,21 @@ export const ROUTES = {
   PROFILE: "/profile",
   ACCOUNT_DETAILS_PATH: "/account/:accountId",
   ACCOUNT_DETAILS: (accountId) => `/account/${accountId}`,
+  AGENT_DETAILS_PATH: "/agent/:agentId",
+  AGENT_DETAILS: (agentId) => `/agent/${agentId}`,
 };
 
 export const FORMAT_DATE = (date) => format(new Date(date), "dd.MM.yyyy");
+
+export const ACCOUNT_TABS_KEYS = {
+  PAYMENTS: "PAYMENTS",
+  HISTORY: "HISTORY",
+};
+
+export const AGENT_TABS_KEYS = {
+  ACCOUNTS:"ACCOUNTS",
+  PAYMENTS: "PAYMENTS",
+  HISTORY: "HISTORY",
+};
+
+export const ROWS_PER_PAGE = 10;

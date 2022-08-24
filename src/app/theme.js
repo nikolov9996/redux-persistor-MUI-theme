@@ -21,6 +21,7 @@ export const theme = createTheme({
 
         sizeSmall: {
           padding: 3,
+          paddingInline:6,
           textTransform: "none"
         },
         contained: {
@@ -32,7 +33,8 @@ export const theme = createTheme({
   },
   typography: {
     allVariants: {
-      color: "#181818"
+      color: "#181818",
+      fontSize:14
     }
   }
 });

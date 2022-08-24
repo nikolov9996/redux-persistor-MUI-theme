@@ -6,6 +6,8 @@ import { Divider, Grid, TextField, Typography } from "@mui/material";
 import { API } from "../services";
 import { useSelector } from "react-redux";
 import { selectAgentId } from "../features/authSlice";
+import { selectCurrentAccount } from "../features/Accounts/accountsSlice";
+import PlusIcon from "@mui/icons-material/Add";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -51,12 +53,14 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function ActionMenu({ text, access, accountId }) {
+export default function AddPayment() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const [comment, setComment] = React.useState("");
+  const [sum, setSum] = React.useState(0);
+  const [date, setDate] = React.useState(new Date());
+
   const agentId = useSelector(selectAgentId);
-  const [loading, setLoading] = React.useState(false);
+  const accountId = useSelector(selectCurrentAccount).id;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -66,7 +70,8 @@ export default function ActionMenu({ text, access, accountId }) {
   };
 
   const handleSubmit = async () => {
-    await API.changeAgentActiveStatus(agentId, accountId, !access, comment)
+    const formattedDate = new Date(date).toISOString();
+    await API.addPaymentToAccount(accountId, agentId, formattedDate, sum)
       .then((resp) => {
         console.log(resp);
       })
@@ -81,16 +86,17 @@ export default function ActionMenu({ text, access, accountId }) {
     <div>
       <Button
         sx={{ minWidth: 100 }}
+        startIcon={<PlusIcon htmlColor="#FFF" />}
         size="small"
         variant="contained"
-        disableElevation
         onClick={handleClick}
       >
-        {text}
+        Добавяне на плащане
       </Button>
+
       <StyledMenu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <Grid
-          sx={{ minHeight: 250 }}
+          sx={{ minHeight: 350 }}
           p={2}
           container
           direction="column"
@@ -101,21 +107,40 @@ export default function ActionMenu({ text, access, accountId }) {
               color="primary"
               sx={{ pb: 2, borderBottom: "2px solid" }}
             >
-              {access ? "Спри достъп" : "Активирай профил"}
+              Добавяне на плащане
             </Typography>
+
             <Divider />
           </Grid>
           <Grid item>
-            <Typography>Описание</Typography>
+            <Typography fontSize={14}>Сума</Typography>
             <TextField
-              value={comment}
-              onChange={({ target: { value } }) => setComment(value)}
+              size="small"
+              type="number"
+              value={sum}
+              onChange={({ target: { value } }) => setSum(value)}
               sx={{ width: "100%", borderColor: "none" }}
             />
           </Grid>
           <Grid item>
-            <Button onClick={handleSubmit} size="small" variant="contained">
-              {access ? "Спри" : "Активирай"}
+            <Typography fontSize={14}>Дата</Typography>
+            <TextField
+              lang="bg-BUL"
+              size="small"
+              type="date"
+              value={date}
+              onChange={({ target: { value } }) => setDate(value)}
+              sx={{ width: "100%", borderColor: "none" }}
+            />
+          </Grid>
+          <Grid sx={{ marginLeft: "auto" }} item>
+            <Button
+              startIcon={<PlusIcon htmlColor="#FFF" />}
+              size="small"
+              variant="contained"
+              onClick={handleSubmit}
+            >
+              Добави
             </Button>
           </Grid>
         </Grid>

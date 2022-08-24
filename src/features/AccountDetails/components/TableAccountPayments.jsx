@@ -3,49 +3,56 @@ import ChevronRight from "@mui/icons-material/ArrowForwardIos";
 import { FORMAT_DATE, ROWS_PER_PAGE } from "../../../app/constants";
 import TableLayout from "../../../components/TableLayout";
 import { DataGrid } from "@mui/x-data-grid";
+import { API } from "../../../services";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectAccountDetailsTab,
   selectCurrentAccount,
-  selectCurrentAccountHistory,
+  selectCurrentAccountPayments,
   selectPage,
   selectRowsPerPage,
   selectTotalRows,
-  setCurrentAccountHistory,
+  setCurrentAccountPayments,
   setPage,
   setRowsPerPage,
   setTotalRows,
 } from "../../Accounts/accountsSlice";
 import { selectAgentId } from "../../authSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { API } from "../../../services";
 
 const columns = [
   {
     field: "id",
     headerName: "№",
     width: 30,
-    // align: "center",
     sortable: false,
   },
   {
-    field: "dateCreated",
-    headerName: "Дата",
+    field: "companiesCount",
+    headerName: "Фирми",
+    width: 100,
+    editable: true,
+  },
+  {
+    field: "documentsCount",
+    headerName: "Документи",
+    width: 150,
+    editable: true,
+  },
+
+  {
+    field: "sum",
+    headerName: "Задължение",
     sortable: false,
     width: 130,
-    valueGetter: (params) => FORMAT_DATE(params.value),
+    valueGetter: (params) => params.value?.toFixed(2) + " BGN",
   },
+
   {
-    field: "active",
-    headerName: "Действие",
+    field: "dateCreated",
+    headerName: "Плащане",
     sortable: false,
     width: 120,
-  },
-  {
-    field: "user",
-    headerName: "Име",
-    sortable: false,
-    width: 200,
-    valueGetter: (params) => params.value.name,
+    valueGetter: (params) => FORMAT_DATE(params.value),
   },
 
   {
@@ -56,54 +63,55 @@ const columns = [
     renderCell: () => <ChevronRight />,
   },
 ];
-const TableAccountHistory = () => {
-  const dispatch = useDispatch();
 
+const TableAccountPayments = () => {
+  const dispatch = useDispatch();
   const page = useSelector(selectPage);
   const agentId = useSelector(selectAgentId);
   const accountId = useSelector(selectCurrentAccount).id;
   const rowsPerPage = useSelector(selectRowsPerPage);
 
-  const rows = useSelector(selectCurrentAccountHistory);
+  const rows = useSelector(selectCurrentAccountPayments);
   const totalRows = useSelector(selectTotalRows);
 
-  const tab = useSelector(selectAccountDetailsTab);
+  const tab = useSelector(selectAccountDetailsTab)
 
   useEffect(() => {
-    // reset table on load
+    // reset table on load or tab change
     dispatch(setPage(1));
     dispatch(setRowsPerPage(ROWS_PER_PAGE));
     dispatch(setTotalRows(0));
-    dispatch(setCurrentAccountHistory([]));
+    dispatch(setCurrentAccountPayments([]));
   }, [tab]);
 
   useEffect(() => {
-    API.getCommentsForAccount(agentId, accountId, page, rowsPerPage).then(
+    API.getPaymentsForAccount(agentId, accountId, page, rowsPerPage).then(
       ({ data }) => {
         const { total, result } = data;
         dispatch(setTotalRows(total));
-        dispatch(setCurrentAccountHistory(result));
+        dispatch(setCurrentAccountPayments(result));
       }
     );
+    return;
   }, [page, rowsPerPage]);
 
   return (
     <TableLayout>
       <DataGrid
-        columns={columns}
-        rows={rows}
         rowsPerPageOptions={[10]}
-        rowHeight={55}
-        paginationMode="server"
-        rowCount={totalRows}
         page={page - 1}
         pageSize={rowsPerPage}
+        rows={rows}
+        columns={columns}
+        rowHeight={55}
+        rowCount={totalRows}
+        paginationMode="server"
         onPageChange={(p) => dispatch(setPage(p + 1))}
         disableSelectionOnClick
         disableColumnMenu
-      ></DataGrid>
+      />
     </TableLayout>
   );
 };
 
-export default TableAccountHistory;
+export default TableAccountPayments;

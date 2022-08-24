@@ -27,15 +27,19 @@ const Layout = ({ children }) => {
   const token = UserService.getToken();
   const name = UserService.getUsername();
   const roles = UserService.getRole()?.roles;
-  console.log(loading);
 
+  const isAdmin = roles.includes("admin");
+
+  console.log(isAdmin);
   useEffect(() => {
     if (token) {
       API.getUserData()
         .then(({ data }) => {
           console.log(data); // id and agent is different todo
           dispatch(authenticate({ token, name, roles }));
-          dispatch(setAgentId(data.agent.id));
+          if (data.agent) {
+            dispatch(setAgentId(data.agent.id));
+          }
         })
         .catch((e) => {
           console.error(e.message);
@@ -73,18 +77,25 @@ const Layout = ({ children }) => {
                 Billing
               </Typography>
             </Grid>
-            <Grid item mt={6}>
-              <IconButton size="small">
-                <BurgerIcon />
-                <Link to={ROUTES.AGENTS}>Агенти</Link>
-              </IconButton>
-            </Grid>
-            <Grid item>
-              <IconButton size="small">
-                <BurgerIcon />
-                <Link to={ROUTES.ACCOUNTS}>Акаунти</Link>
-              </IconButton>
-            </Grid>
+
+            {isAdmin && (
+              <Grid item mt={6}>
+                <IconButton size="small">
+                  <BurgerIcon />
+                  <Link to={ROUTES.AGENTS}>Агенти</Link>
+                </IconButton>
+              </Grid>
+            )}
+
+            {!isAdmin && (
+              <Grid item>
+                <IconButton size="small">
+                  <BurgerIcon />
+                  <Link to={ROUTES.ACCOUNTS}>Акаунти</Link>
+                </IconButton>
+              </Grid>
+            )}
+
             <Grid item>
               <IconButton size="small">
                 <ProfileIcon />
@@ -92,7 +103,7 @@ const Layout = ({ children }) => {
               </IconButton>
             </Grid>
             <Grid item mt={2}>
-              <IconButton size="small">
+              <IconButton onClick={() => UserService.doLogout()} size="small">
                 <CloseIcon sx={{ color: "#075CE7" }} />
                 <Typography color="#075CE7">Изход</Typography>
               </IconButton>
@@ -105,7 +116,6 @@ const Layout = ({ children }) => {
             <Box p={2} sx={{ width: "100%" }}>
               <Grid container direction="row">
                 <Grid item xs={10}></Grid>
-
                 <Grid
                   item
                   xs={2}

@@ -1,17 +1,18 @@
 import { Typography, Box } from "@mui/material";
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { API } from "../../services";
+import { selectAgentId } from "../authSlice";
 import { setAccounts } from "./accountsSlice";
 import TableAccounts from "./components/TableAccounts";
 
 const Accounts = () => {
   const dispatch = useDispatch();
+  const agentId = useSelector(selectAgentId);
 
   useEffect(() => {
-    API.getAccountsById(1) // todo from where this ID?
+    API.getAccountsById(agentId) // todo from where this ID?
       .then((resp) => {
-        console.log(resp);
         dispatch(setAccounts(resp));
       })
       .catch((e) => {

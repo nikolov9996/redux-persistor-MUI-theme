@@ -1,5 +1,4 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAccounts, setCurrentAccount } from "../accountsSlice";
@@ -8,6 +7,8 @@ import Statuses from "../../../components/Statuses";
 import { Grid } from "@mui/material";
 import ActionMenu from "../../../components/ActionMenu";
 import { useNavigate } from "react-router-dom";
+import ChevronRight from "@mui/icons-material/ArrowForwardIos";
+import TableLayout from "../../../components/TableLayout";
 
 const columns = [
   {
@@ -59,7 +60,6 @@ const columns = [
     field: "active",
     headerName: "Статус",
     sortable: false,
-    field: "active",
     width: 250,
     renderCell: (params) => {
       const { value, id } = params;
@@ -85,6 +85,13 @@ const columns = [
       );
     },
   },
+  {
+    field: "chevron",
+    headerName: "",
+    sortable: false,
+    width: 20,
+    renderCell: () => <ChevronRight />,
+  },
 ];
 
 export default function TableAccounts() {
@@ -98,20 +105,21 @@ export default function TableAccounts() {
   };
 
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
+    <TableLayout>
       <DataGrid
         rows={accounts}
         columns={columns}
-        pageSize={5}
+        pageSize={10}
         rowsPerPageOptions={[5]}
         disableSelectionOnClick
         disableColumnMenu
-        // loading={true}
+        rowHeight={55}
+       
         onRowClick={(p) => {
           handleRowClick(p.id);
         }}
         experimentalFeatures={{ newEditingApi: true }}
       />
-    </Box>
+    </TableLayout>
   );
 }
