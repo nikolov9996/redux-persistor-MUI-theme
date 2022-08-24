@@ -120,4 +120,21 @@ export const API = {
       }
     );
   },
+  changeAgentActiveStatus: async (agentId, active, comment) => {
+    const token = UserService.getToken();
+
+    return await httpInstance.post(
+      "agent/active",
+      {
+        agentId,
+        active,
+        comment,
+      },
+      {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
 };

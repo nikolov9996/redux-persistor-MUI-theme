@@ -7,8 +7,6 @@ import { API } from "../services";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAgentId } from "../features/authSlice";
 import { updateAccountAccess } from "../features/Accounts/accountsSlice";
-import UserService from "../UserService";
-import { updateAccountForAgent } from "../features/Agents/agentsSlice";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -54,13 +52,11 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function ActionMenu({ text, access, accountId }) {
+export default function ActionMenuAgent({ text, access, agentId }) {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [comment, setComment] = React.useState("");
-  const agentId = useSelector(selectAgentId);
-  const roles = UserService.getRole().roles;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -70,11 +66,9 @@ export default function ActionMenu({ text, access, accountId }) {
   };
 
   const handleSubmit = async () => {
-    await API.changeAccountActiveStatus(agentId, accountId, !access, comment)
+    await API.changeAgentActiveStatus(agentId, !access, comment)
       .then((resp) => {
-        roles.includes("admin")
-          ? dispatch(updateAccountForAgent({ id: accountId, active: !access }))
-          : dispatch(updateAccountAccess({ id: accountId, active: !access }));
+        // dispatch(updateAccountAccess({ id: accountId, active: !access }));
         console.log(resp);
       })
       .catch((e) => console.error(e.message))

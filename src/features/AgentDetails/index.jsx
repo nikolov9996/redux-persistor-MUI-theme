@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import TableAgentDetails from "./components/TableAgentDetails";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,9 +14,11 @@ import { API } from "../../services";
 import TabsAccountAdmin from "../../components/TabsStyledAdmin";
 import TableAccountHistory from "../AccountDetails/components/TableAccountHistory";
 import TableAccountPayments from "../AccountDetails/components/TableAccountPayments";
+import ActionMenu from "../../components/ActionMenu";
+import ActionMenuAgent from "../../components/ActionMenuAgent";
 
 const AgentDetails = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentAgent = useSelector(selectCurrentAgent);
   const currentTab = useSelector(selectAgentDetailsTab);
@@ -24,18 +26,28 @@ const AgentDetails = () => {
   useEffect(() => {
     if (!currentAgent) return navigate(ROUTES.AGENTS);
     else {
-      API.getAccountsById(currentAgent.id).then((data) => {
-       dispatch(setAccountsForAgent(data))
+      API.getAccountsById(currentAgent?.id).then((data) => {
+        dispatch(setAccountsForAgent(data));
       });
     }
-  }, []);
+  }, [currentAgent]);
+
+  const getText = () => (currentAgent?.active ? "Спри достъп" : "Активирай");
 
   return (
     <div>
       <Box p={4}>
-        <Typography sx={{ fontSize: 24, color: "#8E8E8E" }}>
-          Агент: {currentAgent?.name}
-        </Typography>
+        <Typography sx={{ fontSize: 24, color: "#8E8E8E" }}></Typography>
+        <Grid sx={{ display: "flex", alignItems: "center" }} xs={6} item>
+          <Typography sx={{ fontSize: 24, color: "#8E8E8E", marginRight: 2 }}>
+            Агент: {currentAgent?.name}
+          </Typography>
+          <ActionMenuAgent
+            agentId={currentAgent?.id}
+            access={currentAgent?.active}
+            text={getText()}
+          />
+        </Grid>
         <TabsAccountAdmin />
         {AGENT_TABS_KEYS.ACCOUNTS === currentTab && <TableAgentDetails />}
         {AGENT_TABS_KEYS.PAYMENTS === currentTab && <TableAccountPayments />}

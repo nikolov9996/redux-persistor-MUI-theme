@@ -18,9 +18,14 @@ export const ACCOUNT_TABS_KEYS = {
 };
 
 export const AGENT_TABS_KEYS = {
-  ACCOUNTS:"ACCOUNTS",
+  ACCOUNTS: "ACCOUNTS",
   PAYMENTS: "PAYMENTS",
   HISTORY: "HISTORY",
+};
+
+export const PROFILE_TAB_KEYS = {
+  INFO: "INFO",
+  REGISTRATIONS: "REGISTRATIONS",
 };
 
 export const ROWS_PER_PAGE = 10;

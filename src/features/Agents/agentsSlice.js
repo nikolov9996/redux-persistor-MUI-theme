@@ -25,6 +25,18 @@ const agentsSlice = createSlice({
     setAccountsForAgent: (state, { payload }) => {
       state.accountsForAgent = [...payload];
     },
+    updateAccountForAgent: (state, { payload }) => {
+      const temp = [...state.accountsForAgent];
+
+      const { id, active } = payload;
+
+      const toBeUpdated = temp.find((x) => x.id === +id);
+
+      var index = temp.findIndex((x) => x.id === +id);
+
+      temp[index] = { ...toBeUpdated, active: active };
+      state.accountsForAgent = [...temp];
+    },
   },
 });
 
@@ -42,6 +54,7 @@ export const {
   setCurrentAgent,
   setAgentDetailsTab,
   setAccountsForAgent,
+  updateAccountForAgent,
 } = agentsSlice.actions;
 
 export default agentsSlice.reducer;

@@ -2,13 +2,10 @@ import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
-import { Divider, Grid, TextField, Typography } from "@mui/material";
-import { API } from "../services";
+import { Divider, Grid,  Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAgentId } from "../features/authSlice";
-import { updateAccountAccess } from "../features/Accounts/accountsSlice";
-import UserService from "../UserService";
-import { updateAccountForAgent } from "../features/Agents/agentsSlice";
+import PlusIcon from "@mui/icons-material/Add";
+
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -54,13 +51,10 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function ActionMenu({ text, access, accountId }) {
+export default function AddAccount() {
   const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
-  const [comment, setComment] = React.useState("");
-  const agentId = useSelector(selectAgentId);
-  const roles = UserService.getRole().roles;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -69,19 +63,7 @@ export default function ActionMenu({ text, access, accountId }) {
     setAnchorEl(null);
   };
 
-  const handleSubmit = async () => {
-    await API.changeAccountActiveStatus(agentId, accountId, !access, comment)
-      .then((resp) => {
-        roles.includes("admin")
-          ? dispatch(updateAccountForAgent({ id: accountId, active: !access }))
-          : dispatch(updateAccountAccess({ id: accountId, active: !access }));
-        console.log(resp);
-      })
-      .catch((e) => console.error(e.message))
-      .finally(() => {
-        handleClose();
-      });
-  };
+  
 
   return (
     <div>
@@ -91,8 +73,9 @@ export default function ActionMenu({ text, access, accountId }) {
         variant="contained"
         disableElevation
         onClick={handleClick}
+        startIcon={<PlusIcon/>}
       >
-        {text}
+        Добави акаунт
       </Button>
       <StyledMenu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <Grid
@@ -107,21 +90,14 @@ export default function ActionMenu({ text, access, accountId }) {
               color="primary"
               sx={{ pb: 2, borderBottom: "2px solid" }}
             >
-              {access ? "Спри достъп" : "Активирай профил"}
+             Регистрация
             </Typography>
             <Divider />
           </Grid>
+
           <Grid item>
-            <Typography>Описание</Typography>
-            <TextField
-              value={comment}
-              onChange={({ target: { value } }) => setComment(value)}
-              sx={{ width: "100%", borderColor: "none" }}
-            />
-          </Grid>
-          <Grid item>
-            <Button onClick={handleSubmit} size="small" variant="contained">
-              {access ? "Спри" : "Активирай"}
+            <Button size="small" variant="contained">
+              aaaaa
             </Button>
           </Grid>
         </Grid>
