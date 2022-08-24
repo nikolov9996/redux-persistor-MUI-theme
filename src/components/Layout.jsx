@@ -88,7 +88,7 @@ const Layout = ({ children }) => {
             )}
 
             {!isAdmin && (
-              <Grid item>
+              <Grid item mt={6}>
                 <IconButton size="small">
                   <BurgerIcon />
                   <Link to={ROUTES.ACCOUNTS}>Акаунти</Link>
@@ -96,7 +96,7 @@ const Layout = ({ children }) => {
               </Grid>
             )}
 
-            <Grid item>
+            <Grid item mt={2}>
               <IconButton size="small">
                 <ProfileIcon />
                 <Link to={ROUTES.PROFILE}>Профил</Link>
@@ -109,7 +109,6 @@ const Layout = ({ children }) => {
               </IconButton>
             </Grid>
           </Grid>
-          <Link to="/">Home</Link>
         </Grid>
         <Grid xs={10} item>
           <Paper sx={{ borderRadius: 6, height: "96vh" }}>

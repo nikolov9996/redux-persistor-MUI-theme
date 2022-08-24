@@ -42,6 +42,17 @@ const accountsSlice = createSlice({
     setTotalRows: (state, { payload }) => {
       state.totalRows = payload;
     },
+    updateAccountAccess: (state, { payload }) => {
+      const temp = [...state.accounts];
+
+      const { id, active } = payload;
+
+      const toBeUpdated = temp.find((x) => x.id === +id);
+
+      var index = temp.findIndex((x) => x.id == id);
+      temp[index] = { ...toBeUpdated, active: active };
+      state.accounts = [...temp];
+    },
   },
 });
 
@@ -74,6 +85,7 @@ export const {
   setPage,
   setRowsPerPage,
   setTotalRows,
+  updateAccountAccess,
 } = accountsSlice.actions;
 
 export default accountsSlice.reducer;

@@ -4,6 +4,7 @@ export const AGENTS_SLICE = "agents";
 
 const initialState = {
   agents: [],
+  accountsForAgent: [],
   currentAgent: null,
   currentTab: AGENT_TABS_KEYS.ACCOUNTS,
 };
@@ -18,9 +19,12 @@ const agentsSlice = createSlice({
     setCurrentAgent: (state, { payload }) => {
       state.currentAgent = payload;
     },
-    setAgentDetailsTab:(state,{payload})=>{
-        state.currentTab = payload
-    }
+    setAgentDetailsTab: (state, { payload }) => {
+      state.currentTab = payload;
+    },
+    setAccountsForAgent: (state, { payload }) => {
+      state.accountsForAgent = [...payload];
+    },
   },
 });
 
@@ -30,6 +34,14 @@ export const selectCurrentAgent = (state) => state[AGENTS_SLICE].currentAgent;
 
 export const selectAgentDetailsTab = (state) => state[AGENTS_SLICE].currentTab;
 
-export const { setAgents, setCurrentAgent,setAgentDetailsTab } = agentsSlice.actions;
+export const selectAccountsForAgent = (state) =>
+  state[AGENTS_SLICE].accountsForAgent;
+
+export const {
+  setAgents,
+  setCurrentAgent,
+  setAgentDetailsTab,
+  setAccountsForAgent,
+} = agentsSlice.actions;
 
 export default agentsSlice.reducer;

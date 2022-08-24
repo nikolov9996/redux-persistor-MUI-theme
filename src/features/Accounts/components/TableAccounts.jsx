@@ -114,7 +114,6 @@ export default function TableAccounts() {
         disableSelectionOnClick
         disableColumnMenu
         rowHeight={55}
-       
         onRowClick={(p) => {
           handleRowClick(p.id);
         }}

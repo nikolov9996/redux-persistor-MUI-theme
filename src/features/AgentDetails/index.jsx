@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import TableAgentDetails from "./components/TableAgentDetails";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   selectAgentDetailsTab,
   selectCurrentAgent,
+  setAccountsForAgent,
 } from "../Agents/agentsSlice";
 import { useNavigate } from "react-router-dom";
 import { AGENT_TABS_KEYS, ROUTES } from "../../app/constants";
@@ -15,6 +16,7 @@ import TableAccountHistory from "../AccountDetails/components/TableAccountHistor
 import TableAccountPayments from "../AccountDetails/components/TableAccountPayments";
 
 const AgentDetails = () => {
+  const dispatch = useDispatch()
   const navigate = useNavigate();
   const currentAgent = useSelector(selectCurrentAgent);
   const currentTab = useSelector(selectAgentDetailsTab);
@@ -23,7 +25,7 @@ const AgentDetails = () => {
     if (!currentAgent) return navigate(ROUTES.AGENTS);
     else {
       API.getAccountsById(currentAgent.id).then((data) => {
-        console.log(data);
+       dispatch(setAccountsForAgent(data))
       });
     }
   }, []);
@@ -31,7 +33,9 @@ const AgentDetails = () => {
   return (
     <div>
       <Box p={4}>
-        <Typography sx={{ fontSize: 24, color: "#8E8E8E" }}>Агент:</Typography>
+        <Typography sx={{ fontSize: 24, color: "#8E8E8E" }}>
+          Агент: {currentAgent?.name}
+        </Typography>
         <TabsAccountAdmin />
         {AGENT_TABS_KEYS.ACCOUNTS === currentTab && <TableAgentDetails />}
         {AGENT_TABS_KEYS.PAYMENTS === currentTab && <TableAccountPayments />}

@@ -24,8 +24,8 @@ const Accounts = () => {
     <>
       <Box p={4}>
         <Typography sx={{ fontSize: 24, color: "#8E8E8E" }}>Акаунти</Typography>
+        <TableAccounts />
       </Box>
-      <TableAccounts />
     </>
   );
 };

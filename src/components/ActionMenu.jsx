@@ -4,8 +4,9 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import { Divider, Grid, TextField, Typography } from "@mui/material";
 import { API } from "../services";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectAgentId } from "../features/authSlice";
+import { updateAccountAccess } from "../features/Accounts/accountsSlice";
 
 const StyledMenu = styled((props) => (
   <Menu
@@ -52,11 +53,11 @@ const StyledMenu = styled((props) => (
 }));
 
 export default function ActionMenu({ text, access, accountId }) {
+  const dispatch = useDispatch();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [comment, setComment] = React.useState("");
   const agentId = useSelector(selectAgentId);
-  const [loading, setLoading] = React.useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -66,14 +67,14 @@ export default function ActionMenu({ text, access, accountId }) {
   };
 
   const handleSubmit = async () => {
-    await API.changeAgentActiveStatus(agentId, accountId, !access, comment)
+    await API.changeAccountActiveStatus(agentId, accountId, !access, comment)
       .then((resp) => {
+        dispatch(updateAccountAccess({ id:accountId, active: !access }));
         console.log(resp);
       })
       .catch((e) => console.error(e.message))
       .finally(() => {
         handleClose();
-        // update row here
       });
   };
 

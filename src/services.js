@@ -1,10 +1,25 @@
 import axios from "axios";
 import UserService from "./UserService";
 
-export const httpInstance = axios.create({
+const httpInstance = axios.create({
   baseURL: "https://billing-ocr.infn.dev/backend/api/",
   timeout: 5000,
 });
+
+httpInstance.interceptors.response.use(
+  async function (config) {
+    return config;
+  },
+  (error) => {
+    const errCode = error.response.status;
+
+    if (errCode === 403) {
+      window.location.href = "/";
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export const API = {
   getAccountsById: async (agentId) => {
@@ -37,7 +52,7 @@ export const API = {
       },
     });
   },
-  changeAgentActiveStatus: async (agentId, accountId, isActive, comment) => {
+  changeAccountActiveStatus: async (agentId, accountId, isActive, comment) => {
     const token = UserService.getToken();
 
     return await httpInstance.post(
@@ -57,11 +72,11 @@ export const API = {
   },
   getPaymentsForAccount: async (agentId, accountId, page, rowsPerPage) => {
     const token = UserService.getToken();
-
+    const isAdmin = UserService.getRole().roles.includes("admin");
     const query = new URLSearchParams();
 
     query.append("agentId", agentId);
-    accountId && query.append("acLong", accountId || agentId);
+    !isAdmin && query.append("acLong", accountId || agentId);
     query.append("page", page);
     query.append("count", rowsPerPage);
 
@@ -73,11 +88,12 @@ export const API = {
   },
   getCommentsForAccount: async (agentId, accountId, page, rowsPerPage) => {
     const token = UserService.getToken();
+    const isAdmin = UserService.getRole().roles.includes("admin");
 
     const query = new URLSearchParams();
 
     query.append("agentId", agentId);
-    accountId && query.append("accountId", accountId);
+    !isAdmin && query.append("accountId", accountId);
     query.append("page", page);
     query.append("count", rowsPerPage);
 
